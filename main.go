@@ -7,6 +7,9 @@ import (
 	"os"
 )
 
+var filename string
+var playerName string
+
 type STATE int64
 
 const (
@@ -69,15 +72,23 @@ func getScore(scores Scores, playerName string) (int, error) {
 	return 0, fmt.Errorf("Score non trouvé pour le joueur %s", playerName)
 }
 
+func setScore(scores *Scores, playerName string, newScore int) {
+	for i, score := range scores.Scores {
+		if score.Name == playerName {
+			scores.Scores[i].Score = newScore
+			return
+		}
+	}
+}
+
 func main() {
-	filename := "score.json"
+	filename = "score.json"
 	scores, err := readScores(filename)
 	if err != nil {
 		fmt.Println("Erreur lors de la lecture du fichier:", err)
 		return
 	}
 	fmt.Println("Veuillez préciser votre pseudo")
-	var playerName string
 	fmt.Scan(&playerName)
 	scoreOfPlayer, err2 := getScore(scores, playerName)
 	if err2 != nil {
@@ -88,7 +99,9 @@ func main() {
 		scores.Scores = append(scores.Scores, newScore)
 		writeScores(filename, scores)
 	}
+}
 
+func welcome() {
 	fmt.Println("Bienvenu sur le jeu du pendu")
 	fmt.Println("Veuillez choisir une option ci-dessous \n\n 1. Lancer une partie \n 2. Voir les règles du jeu \n 3. Voir les scores \n 4. Quitter le jeu \n")
 
@@ -102,8 +115,13 @@ func main() {
 		fmt.Println("Vous aurez 10 vies maximum pour trouver celui-ci,")
 		fmt.Println("A chaque début de partie, trois lettres du mots vous seront données. \n")
 		fmt.Println("Bonne partie !")
-		main()
+		welcome()
 	case 3:
+		scores, err := readScores(filename)
+		if err != nil {
+			fmt.Println("Erreur lors de la lecture du fichier:", err)
+			welcome()
+		}
 		fmt.Println("Voici les scores : \n")
 		for _, sc := range scores.Scores {
 			fmt.Println(sc.Name, ":", sc.Score)
@@ -118,6 +136,16 @@ func main() {
 func play() {
 	for {
 		if GAME_STATE == END {
+			scores, err := readScores(filename)
+			if err != nil {
+				fmt.Println("Sauvegarde de votre score impossible !")
+			}
+			scoreOfPlayer, err2 := getScore(scores, playerName)
+			setScore(&scores, playerName, scoreOfPlayer+1)
+			writeScores(filename, scores)
+			if err2 != nil {
+				fmt.Println("Sauvegarde de votre score impossible !")
+			}
 			break
 		}
 	}
