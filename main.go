@@ -1,7 +1,34 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"math/rand"
+	"os"
+)
+
+func generateN() {
+	nombre := rand.Intn(38)
+	fmt.Println("Votre mots aleatoire a trouver pour le jeu", nombre)
+}
 
 func main() {
-	fmt.Print("f")
+	file, err := os.Open("word.txt")
+	if err != nil {
+		fmt.Println("Erreur d'ouverture du fichier:", err)
+		return
+	}
+	defer file.Close()
+	var mots []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		ligne := scanner.Text()
+		mots = append(mots, ligne)
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Println("Erreur lors de la lecture du fichier:", err)
+		return
+	}
+	index := rand.Intn(len(mots))
+	fmt.Println("Mot sélectionné pour le pendu:", mots[index])
 }
