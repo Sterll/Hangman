@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/list"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,8 @@ import (
 
 var filename string
 var playerName string
+var word string
+var wordtest list
 
 type STATE int64
 
@@ -101,7 +104,8 @@ func main() {
 		return
 	}
 	index := rand.Intn(len(mots))
-	fmt.Println("Mot sélectionné pour le pendu:", mots[index])
+	word = mots[index]
+	fmt.Println("Mot sélectionné pour le pendu:", word)
 
 	filename = "score.json"
 	scores, err := readScores(filename)
@@ -170,7 +174,8 @@ func play() {
 			}
 			break
 		}
-
+		
 		// Dev ici le pendu
+		
 	}
 }
