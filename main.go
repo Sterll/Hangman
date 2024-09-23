@@ -109,6 +109,7 @@ func main() {
 		fmt.Println("Erreur lors de la lecture du fichier:", err)
 		return
 	}
+	fmt.Println("Bienvenu sur le jeu du pendu")
 	fmt.Println("Veuillez préciser votre pseudo")
 	fmt.Scan(&playerName)
 	scoreOfPlayer, err2 := getScore(scores, playerName)
@@ -124,7 +125,6 @@ func main() {
 }
 
 func welcome() {
-	fmt.Println("Bienvenu sur le jeu du pendu")
 	fmt.Println("Veuillez choisir une option ci-dessous \n\n 1. Lancer une partie \n 2. Voir les règles du jeu \n 3. Voir les scores \n 4. Quitter le jeu \n")
 
 	var choice int
