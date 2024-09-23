@@ -170,5 +170,7 @@ func play() {
 			}
 			break
 		}
+
+		// Dev ici le pendu
 	}
 }
