@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"math/rand"
+	"os"
+)
 
 func main() {
 	file, err := os.Open("word.txt")
