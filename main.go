@@ -120,6 +120,7 @@ func main() {
 		scores.Scores = append(scores.Scores, newScore)
 		writeScores(filename, scores)
 	}
+	welcome()
 }
 
 func welcome() {
