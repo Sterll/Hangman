@@ -6,7 +6,7 @@ Bienvenue sur **Pendu CLI** ! Il s'agit d'une version en ligne de commande du je
 ### Développé par :
 
 - [Yanis Benyacine](https://github.com/YanisBenyacine)
-- [RodigoJK](https://github.com/RodigoJK)
+- [RodigoJK](https://github.com/RodrigoJK)
 
 ## Fonctionnalités
 
