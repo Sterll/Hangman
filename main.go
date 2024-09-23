@@ -20,4 +20,11 @@ func main() {
 	fmt.Print("f")
 	list.New()
 	os.Exit(0)
+
+	for {
+		if GAME_STATE == WAITING || GAME_STATE == END {
+			break
+		}
+		
+	}
 }
