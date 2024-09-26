@@ -13,7 +13,8 @@ import (
 var filename string
 var playerName string
 var word string
-var wordtest list
+
+//var wordtest list
 
 type STATE int64
 
@@ -87,6 +88,8 @@ func setScore(scores *Scores, playerName string, newScore int) {
 }
 
 func main() {
+	temp := list.New()
+	temp = temp
 	file, err := os.Open("word.txt")
 	if err != nil {
 		fmt.Println("Erreur d'ouverture du fichier:", err)
@@ -174,8 +177,8 @@ func play() {
 			}
 			break
 		}
-		
+
 		// Dev ici le pendu
-		
+
 	}
 }
