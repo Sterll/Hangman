@@ -8,13 +8,14 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"strings"
 )
 
 var filename string
 var playerName string
 var word string
 
-//var wordtest list
+var wordtest *list.List
 
 type STATE int64
 
@@ -88,8 +89,7 @@ func setScore(scores *Scores, playerName string, newScore int) {
 }
 
 func main() {
-	temp := list.New()
-	temp = temp
+	wordtest = list.New()
 	file, err := os.Open("word.txt")
 	if err != nil {
 		fmt.Println("Erreur d'ouverture du fichier:", err)
@@ -109,6 +109,19 @@ func main() {
 	index := rand.Intn(len(mots))
 	word = mots[index]
 	fmt.Println("Mot sélectionné pour le pendu:", word)
+
+	temp := 1
+	for _, char := range word {
+		char = char
+		if temp != len(word) {
+			wordtest.PushBack("_ ")
+		} else {
+			wordtest.PushBack("_")
+		}
+		temp++
+	}
+
+	fmt.Println("Voici le mot à trouver : " + wordToString(*wordtest))
 
 	filename = "score.json"
 	scores, err := readScores(filename)
@@ -181,4 +194,12 @@ func play() {
 		// Dev ici le pendu
 
 	}
+}
+
+func wordToString(l list.List) string {
+	var strList []string
+	for e := l.Front(); e != nil; e = e.Next() {
+		strList = append(strList, fmt.Sprintf("%v", e.Value))
+	}
+	return strings.Join(strList, "")
 }
