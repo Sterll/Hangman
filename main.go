@@ -211,8 +211,12 @@ func play() {
 			}
 		}
 		// TODO: Vérifier si la lettre est dans le mot
+		if strings.Contains(word, letter) {
 
-		// TODO: Vérifier si la lettre a déjà été proposée
+		} else {
+			erreurs++
+		}
+	}
 }
 
 func wordToString(l list.List) string {
