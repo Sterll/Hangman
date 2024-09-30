@@ -192,7 +192,20 @@ func play() {
 		}
 
 		// Dev ici le pendu
+		decouverte := make([]rune, len(word))
+		for i := range decouverte {
+			decouverte[i] = '_'
 
+			tentativesMax := 10
+			erreurs := 0
+			lettresDevinées := ""
+
+			for erreurs < tentativesMax && strings.ContainsRune(string(decouverte), '_') {
+				fmt.Printf("\nMot à deviner : %s\n", string(decouverte))
+				fmt.Printf("Lettres devinées : %s\n", lettresDevinées)
+				fmt.Printf("Il vous reste %d tentatives.\n", tentativesMax-erreurs)
+			}
+		}
 	}
 }
 
