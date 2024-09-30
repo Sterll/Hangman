@@ -151,6 +151,7 @@ func welcome() {
 	fmt.Scan(&choice)
 	switch choice {
 	case 1:
+		play()
 	case 2:
 		fmt.Println("Voici les règles du jeu : \n")
 		fmt.Println("Un mot sera choisis aléatoirement parmis une liste de mots prédéfinis,")
@@ -176,6 +177,10 @@ func welcome() {
 }
 
 func play() {
+	decouverte := list.New()
+	tentativesMax := 10
+	erreurs := 0
+	var letter string
 	for {
 		if GAME_STATE == END {
 			scores, err := readScores(filename)
@@ -192,21 +197,22 @@ func play() {
 		}
 
 		// Dev ici le pendu
-		decouverte := make([]rune, len(word))
-		for i := range decouverte {
-			decouverte[i] = '_'
-
-			tentativesMax := 10
-			erreurs := 0
-			lettresDevinées := ""
-
-			for erreurs < tentativesMax && strings.ContainsRune(string(decouverte), '_') {
-				fmt.Printf("\nMot à deviner : %s\n", string(decouverte))
-				fmt.Printf("Lettres devinées : %s\n", lettresDevinées)
-				fmt.Printf("Il vous reste %d tentatives.\n", tentativesMax-erreurs)
+		fmt.Printf("\nMot à deviner : %s\n", string(wordToString(*wordtest)))
+		fmt.Printf("Lettres devinées : %s\n", wordToString(*decouverte))
+		fmt.Printf("Il vous reste %d tentatives.\n", tentativesMax-erreurs)
+		fmt.Println("Veuillez entrer une lettre :")
+		fmt.Scan(&letter)
+		for {
+			if len(letter) != 1 {
+				fmt.Println("Veuillez entrer une seule lettre")
+				fmt.Scan(&letter)
+			} else {
+				break
 			}
 		}
-	}
+		// TODO: Vérifier si la lettre est dans le mot
+
+		// TODO: Vérifier si la lettre a déjà été proposée
 }
 
 func wordToString(l list.List) string {
