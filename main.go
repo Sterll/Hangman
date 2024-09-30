@@ -192,7 +192,6 @@ func play() {
 		}
 
 		// Dev ici le pendu
-
 	}
 }
 
