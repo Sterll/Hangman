@@ -69,7 +69,6 @@ func readScores(filename string) (Scores, error) {
 	return scores, nil
 }
 
-// Fonction pour écrire les scores dans le fichier JSON
 func writeScores(filename string, scores Scores) error {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -102,7 +101,7 @@ func setScore(scores *Scores, playerName string, newScore int) {
 			return
 		}
 	}
-	// Si le joueur n'est pas trouvé, l'ajouter
+
 	scores.Scores = append(scores.Scores, Score{Name: playerName, Score: newScore})
 }
 
@@ -120,18 +119,17 @@ func loadHangmanStages(filename string) ([]string, error) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		lineNumber++
-		// Si c'est le premier dessin (ligne 1)
+
 		if lineNumber == 1 {
 			stages = append(stages, line)
 			continue
 		}
-		// Ignorer les lignes vides
+
 		if line == "" {
 			continue
 		}
-		// Ajouter les lignes au dessin actuel
+
 		stageLines = append(stageLines, line)
-		// Chaque dessin fait 7 lignes
 		if len(stageLines) == 7 {
 			stages = append(stages, strings.Join(stageLines, "\n"))
 			stageLines = []string{}
@@ -146,12 +144,10 @@ func loadHangmanStages(filename string) ([]string, error) {
 func main() {
 	filename = "score.json"
 
-	// Gestion des arguments de la ligne de commande
 	var startWith string
 	flag.StringVar(&startWith, "startWith", "", "Commencer le jeu avec le fichier de sauvegarde spécifié")
 	flag.Parse()
 
-	// Charger les stages du pendu
 	var err error
 	hangmanStages, err = loadHangmanStages("hangman.txt")
 	if err != nil {
@@ -159,7 +155,6 @@ func main() {
 		return
 	}
 
-	// Charger les mots depuis le fichier
 	var mots []string
 	file, err := os.Open("word.txt")
 	if err != nil {
@@ -178,9 +173,7 @@ func main() {
 		return
 	}
 
-	// Initialiser ou charger l'état du jeu
 	if startWith != "" {
-		// Charger l'état du jeu depuis le fichier de sauvegarde
 		savedGame, err := loadGame(startWith)
 		if err != nil {
 			fmt.Println("Erreur lors du chargement de la sauvegarde :", err)
@@ -191,15 +184,12 @@ func main() {
 		wordtest = savedGame.WordTest
 		GAME_STATE = savedGame.GameState
 
-		// Charger les scores
 		scores, err := readScores(filename)
 		if err != nil {
 			fmt.Println("Erreur lors de la lecture du fichier des scores :", err)
-			// Si le fichier n'existe pas, initialiser une structure vide
 			scores = Scores{Scores: []Score{}}
 		}
 
-		// Initialiser le score du joueur s'il n'existe pas
 		_, err2 := getScore(scores, playerName)
 		if err2 != nil {
 			newScore := Score{
@@ -213,23 +203,18 @@ func main() {
 			}
 		}
 
-		// Commencer la partie avec l'état chargé
 		play(&savedGame.Decouverte, &savedGame.Erreurs, savedGame.PlayerWon, &savedGame.Propositions, mots)
 	} else {
-		// Message de bienvenue
 		fmt.Println("Bienvenue dans le jeu du Pendu")
 		fmt.Println("Veuillez entrer votre pseudo :")
 		fmt.Scan(&playerName)
 
-		// Charger les scores
 		scores, err := readScores(filename)
 		if err != nil {
 			fmt.Println("Erreur lors de la lecture du fichier des scores :", err)
-			// Si le fichier n'existe pas, initialiser une structure vide
 			scores = Scores{Scores: []Score{}}
 		}
 
-		// Initialiser le score du joueur s'il n'existe pas
 		_, err2 := getScore(scores, playerName)
 		if err2 != nil {
 			newScore := Score{
@@ -243,7 +228,6 @@ func main() {
 			}
 		}
 
-		// Boucle du menu principal
 		for {
 			welcome(scores, mots)
 		}
@@ -261,7 +245,6 @@ func welcome(scores Scores, mots []string) {
 	fmt.Scan(&choice)
 	switch choice {
 	case 1:
-		// Démarrer une nouvelle partie
 		decouverte := make(map[rune]bool)
 		erreurs := 0
 		playerWon := false
@@ -292,9 +275,8 @@ func welcome(scores Scores, mots []string) {
 
 func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions *[]string, mots []string) {
 	GAME_STATE = PLAYING
-	tentativesMax := len(hangmanStages) - 1 // Le nombre maximum de tentatives est le nombre de dessins moins un
+	tentativesMax := len(hangmanStages) - 1
 
-	// Sélectionner un mot au hasard si ce n'est pas une partie chargée
 	if word == "" {
 		index := rand.Intn(len(mots))
 		word = strings.ToLower(mots[index])
@@ -307,9 +289,7 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 	reader := bufio.NewReader(os.Stdin)
 
 	for GAME_STATE == PLAYING {
-		// Afficher l'état actuel
 		fmt.Println("\n-----------------------------")
-		// Afficher le dessin du pendu correspondant
 		fmt.Println(hangmanStages[*erreurs])
 
 		fmt.Printf("\nMot à deviner : ")
@@ -321,7 +301,6 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 		for l := range *decouverte {
 			letters = append(letters, l)
 		}
-		// Trier les lettres devinées
 		sort.Slice(letters, func(i, j int) bool { return letters[i] < letters[j] })
 		for _, l := range letters {
 			fmt.Printf("%c ", l)
@@ -333,7 +312,6 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 		input = strings.TrimSpace(input)
 
 		if strings.ToUpper(input) == "STOP" {
-			// Sauvegarder l'état du jeu et quitter
 			err := saveGame("save.txt", decouverte, *erreurs, playerWon, propositions)
 			if err != nil {
 				fmt.Println("Erreur lors de la sauvegarde du jeu :", err)
@@ -343,7 +321,6 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 			os.Exit(0)
 		}
 
-		// Vérifier si l'entrée a déjà été proposée
 		if containsString(*propositions, strings.ToLower(input)) {
 			fmt.Println("Vous avez déjà proposé cette lettre ou ce mot.")
 			continue
@@ -351,9 +328,7 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 
 		*propositions = append(*propositions, strings.ToLower(input))
 
-		// Si l'entrée est un mot de plus d'un caractère
 		if len(input) > 1 {
-			// Vérifier si le mot proposé est correct
 			if strings.ToLower(input) == word {
 				fmt.Println("\nFélicitations, vous avez deviné le mot !")
 				fmt.Printf("Le mot était : %s\n", word)
@@ -364,17 +339,14 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 				*erreurs += 2
 			}
 		} else if len(input) == 1 {
-			// Vérifier si l'entrée est une lettre valide
 			if !unicode.IsLetter(rune(input[0])) {
 				fmt.Println("Veuillez entrer une lettre valide.")
 				continue
 			}
 
 			letter := rune(input[0])
-			// Convertir en minuscule
 			letter = unicode.ToLower(letter)
 
-			// Vérifier si la lettre a déjà été devinée
 			if (*decouverte)[letter] {
 				fmt.Println("Vous avez déjà deviné cette lettre.")
 				continue
@@ -382,10 +354,8 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 
 			(*decouverte)[letter] = true
 
-			// Vérifier si la lettre est dans le mot
 			if strings.ContainsRune(word, letter) {
 				fmt.Println("Bonne réponse !")
-				// Mettre à jour wordtest
 				for i, l := range word {
 					if l == letter {
 						wordtest[i] = letter
@@ -400,7 +370,6 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 			continue
 		}
 
-		// Vérifier la condition de victoire
 		if !containsRune(wordtest, '_') {
 			fmt.Println("\nFélicitations, vous avez gagné !")
 			fmt.Printf("Le mot était : %s\n", word)
@@ -408,9 +377,7 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 			playerWon = true
 		}
 
-		// Vérifier la condition de défaite
 		if *erreurs >= tentativesMax {
-			// Afficher le dernier dessin du pendu
 			fmt.Println("\n-----------------------------")
 			fmt.Println(hangmanStages[*erreurs])
 			fmt.Println("\nVous avez perdu.")
@@ -419,7 +386,6 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 		}
 	}
 
-	// Mettre à jour et enregistrer le score si le joueur a gagné
 	if GAME_STATE == END && playerWon {
 		scores, err := readScores(filename)
 		if err != nil {
@@ -434,7 +400,6 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 		}
 	}
 
-	// Réinitialiser l'état du jeu pour une nouvelle partie
 	word = ""
 	wordtest = []rune{}
 	GAME_STATE = WAITING
