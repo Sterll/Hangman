@@ -254,7 +254,7 @@ func welcome(scores Scores, mots []string) {
 		fmt.Println("\nRègles du jeu :")
 		fmt.Println("Un mot sera choisi aléatoirement parmi une liste prédéfinie.")
 		fmt.Println("Vous avez un certain nombre de vies pour le deviner, correspondant au nombre d'étapes du dessin du pendu.")
-		fmt.Println("Au début de chaque partie, toutes les lettres sont cachées.")
+		fmt.Println("Au début de chaque partie, certaines lettres seront déjà découvertes.")
 		fmt.Println("Vous pouvez proposer soit une lettre, soit un mot (au moins deux caractères).")
 		fmt.Println("Si vous proposez un mot et qu'il est incorrect, le compteur de tentatives diminue de 2.")
 		fmt.Println("Vous ne pouvez pas proposer la même lettre deux fois.")
@@ -283,6 +283,22 @@ func play(decouverte *map[rune]bool, erreurs *int, playerWon bool, propositions 
 		wordtest = make([]rune, len(word))
 		for i := range word {
 			wordtest[i] = '_'
+		}
+
+		// Calcul du nombre de lettres à révéler
+		revealCount := len(word)/2 - 1
+		if revealCount < 0 {
+			revealCount = 0
+		}
+
+		// Révélation aléatoire des lettres
+		revealedIndices := make(map[int]bool)
+		for len(revealedIndices) < revealCount {
+			idx := rand.Intn(len(word))
+			if !revealedIndices[idx] && wordtest[idx] == '_' {
+				wordtest[idx] = rune(word[idx])
+				revealedIndices[idx] = true
+			}
 		}
 	}
 
