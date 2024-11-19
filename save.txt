@@ -1,21 +1,30 @@
 {
-  "player_name": "Yanis",
-  "word": "robinet",
+  "player_name": "Mathieu",
+  "word": "exterieur",
   "word_test": [
+    101,
     95,
-    111,
     95,
+    101,
+    114,
     105,
-    95,
-    95,
-    95
+    101,
+    117,
+    114
   ],
   "decouverte": {
-    "105": true,
-    "111": true
+    "101": true,
+    "114": true,
+    "121": true,
+    "97": true
   },
-  "erreurs": 0,
+  "erreurs": 2,
   "game_state": 1,
   "player_won": false,
-  "propositions": []
+  "propositions": [
+    "y",
+    "r",
+    "e",
+    "a"
+  ]
 }
